@@ -1,0 +1,4 @@
+github.com/CREDOProject/go-anticonf-parser v0.0.2 h1:XazKnAcrJqDvMWZ2pt+i4X4G//GKTcjITLqp9FPC4NQ=
+github.com/CREDOProject/go-anticonf-parser v0.0.2/go.mod h1:LAa2IRV/7NE7Nejpe2QF4UknDMcwDvti1EDkDmgUH9E=
+github.com/CREDOProject/sharedutils v0.0.4 h1:jMKlOyTDQxzF+oGCcqzopuMzM/JNtu8ETfSdgVxTyXo=
+github.com/CREDOProject/sharedutils v0.0.4/go.mod h1:lOd6evmYnKPa+Q191hZMAFXttCWbhDmMAj33n3sCvAE=

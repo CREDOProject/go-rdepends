@@ -1,9 +1,26 @@
 package gordepends
 
-import "github.com/CREDOProject/go-rdepends/providers"
+import (
+	"errors"
+
+	"github.com/CREDOProject/go-rdepends/extractor"
+	"github.com/CREDOProject/go-rdepends/providers"
+)
+
+var (
+	ErrNotTar = errors.New("File provided is not a tar.gz file.")
+)
 
 // Retrieves the list of dependencies from a package.
-func DependsOn(packagePath string, providersOptional ...providers.Provider) ([]providers.Dependency, error) {
+func DependsOn(packagePath string,
+	providersOptional ...providers.Provider) ([]providers.Dependency, error) {
+	if !extractor.Validate(packagePath) {
+		return nil, ErrNotTar
+	}
+	extractPath, err := extractor.Extract(packagePath)
+	if err != nil {
+		return nil, err
+	}
 	var configuredProviders []providers.Provider
 	if len(providersOptional) > 0 {
 		configuredProviders = providersOptional
@@ -12,7 +29,7 @@ func DependsOn(packagePath string, providersOptional ...providers.Provider) ([]p
 	}
 	var dependencyList []providers.Dependency
 	for _, provider := range configuredProviders {
-		list, err := provider.Parse(packagePath)
+		list, err := provider.Parse(*extractPath)
 		if err != nil {
 			// TODO: Implement error logic.
 		}
