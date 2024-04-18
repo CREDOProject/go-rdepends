@@ -1,8 +1,13 @@
 package extractor
 
-import "testing"
+import (
+	"fmt"
+	"os"
+	"path"
+	"testing"
+)
 
-func Validate_Test(t *testing.T) {
+func Test_Validate(t *testing.T) {
 	type testutil struct {
 		Path   string
 		Expect bool
@@ -22,4 +27,30 @@ func Validate_Test(t *testing.T) {
 			t.Errorf("Expected %t for %s, got %t", v.Expect, v.Path, validate)
 		}
 	}
+}
+
+func Test_Extract(t *testing.T) {
+	pathToExtract := "../test_assets/test.tar.gz"
+	dir, err := os.Getwd()
+	if err != nil {
+		t.Error(err)
+	}
+	path, err := Extract(path.Join(dir, pathToExtract))
+	if err != nil {
+		t.Error(err)
+	}
+	fmt.Printf("%s", *path)
+}
+
+func Text_ExtractNoFile(t *testing.T) {
+	pathToExtract := "../test_assets/notexists"
+	dir, err := os.Getwd()
+	if err == nil {
+		t.Error(err)
+	}
+	path, err := Extract(path.Join(dir, pathToExtract))
+	if err == nil {
+		t.Error("Expected error")
+	}
+	fmt.Printf("%s", *path)
 }
