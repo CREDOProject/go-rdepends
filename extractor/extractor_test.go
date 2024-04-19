@@ -15,6 +15,7 @@ func Test_Validate(t *testing.T) {
 
 	testExpect := []testutil{
 		{Path: "/tmp/a.tar.gz", Expect: true},
+		{Path: "/tmp/a.a.a.a.a.tar.gz", Expect: true},
 		{Path: "/tmp/a.zip", Expect: false},
 		{Path: "/tmp/a.tar", Expect: false},
 		{Path: "/tmp/a.gz", Expect: false},

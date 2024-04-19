@@ -8,19 +8,17 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"strings"
+	"regexp"
+)
+
+var (
+	targzre = regexp.MustCompile(`^.*\.tar\.gz$`)
 )
 
 // Validate a path to see if it is a tar.gz.
 func Validate(path string) bool {
 	last := filepath.Base(path)
-	split := strings.Split(last, ".")
-	if len(split) < 2 {
-		return false
-	}
-	ext := strings.Join(split[1:], ".")
-	ext = strings.ToLower(ext)
-	return ext == "tar.gz"
+	return targzre.MatchString(last)
 }
 
 // Extract a .tar.gz and returns a new temporary directory where the file is
