@@ -14,7 +14,9 @@ var (
 )
 
 var pkgMgrMap = map[string]string{
-	"DEB": "apt",
+	"DEB":  "apt",
+	"RPM":  "rpm",
+	"BREW": "brew",
 }
 
 func anticonfLooksLike(name string) bool {
