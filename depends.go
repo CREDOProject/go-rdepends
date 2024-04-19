@@ -13,6 +13,9 @@ var (
 	ErrNotTar = errors.New("File provided is not a tar.gz file.")
 )
 
+// Default configuredProviders.
+var configuredProviders = providers.DefaultProviders()
+
 // Retrieves the list of dependencies from a package.
 func DependsOn(packagePath string,
 	providersOptional ...providers.Provider) ([]providers.Dependency, error) {
@@ -20,15 +23,12 @@ func DependsOn(packagePath string,
 		return nil, ErrNotTar
 	}
 	extractPath, err := extractor.Extract(packagePath)
-	defer os.RemoveAll(*extractPath)
 	if err != nil {
 		return nil, err
 	}
-	var configuredProviders []providers.Provider
+	defer os.RemoveAll(*extractPath)
 	if len(providersOptional) > 0 {
 		configuredProviders = providersOptional
-	} else {
-		configuredProviders = providers.DefaultProviders()
 	}
 	var dependencyList []providers.Dependency
 	// Reads all the subnodes of the extractPath.
