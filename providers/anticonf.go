@@ -25,9 +25,9 @@ func anticonfLooksLike(name string) bool {
 type anticonf struct{}
 
 // Parse implements Provider.
-func (a anticonf) Parse(path string) ([]Dependency, error) {
+func (a anticonf) Parse(extractpath string) ([]Dependency, error) {
 	var dependencies []Dependency
-	anticonfFiles, err := uf.ExecsInPath(path, anticonfLooksLike)
+	anticonfFiles, err := uf.ExecsInPath(extractpath, anticonfLooksLike)
 	if err != nil {
 		return nil, err
 	}
