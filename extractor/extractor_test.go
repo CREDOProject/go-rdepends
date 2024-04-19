@@ -55,3 +55,16 @@ func Text_ExtractNoFile(t *testing.T) {
 	}
 	fmt.Printf("%s", *path)
 }
+
+func Text_ExtractBadFile(t *testing.T) {
+	pathToExtract := "../test_assets/badfile.tar.gz"
+	dir, err := os.Getwd()
+	if err == nil {
+		t.Error(err)
+	}
+	path, err := Extract(path.Join(dir, pathToExtract))
+	if err == nil {
+		t.Error("Expected error")
+	}
+	fmt.Printf("%s", *path)
+}
