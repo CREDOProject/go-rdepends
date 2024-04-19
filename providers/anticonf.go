@@ -2,10 +2,10 @@ package providers
 
 import (
 	"os"
+	"path"
 	"regexp"
 
 	ap "github.com/CREDOProject/go-anticonf-parser"
-	uf "github.com/CREDOProject/sharedutils/files"
 )
 
 var (
@@ -27,21 +27,27 @@ type anticonf struct{}
 // Parse implements Provider.
 func (a anticonf) Parse(extractpath string) ([]Dependency, error) {
 	var dependencies []Dependency
-	anticonfFiles, err := uf.ExecsInPath(extractpath, anticonfLooksLike)
+	files, err := os.ReadDir(extractpath)
 	if err != nil {
 		return nil, err
 	}
+	var anticonfFiles []string
+	for _, f := range files {
+		if anticonfLooksLike(f.Name()) {
+			anticonfFiles = append(anticonfFiles, f.Name())
+		}
+	}
 	for _, anticonfEntry := range anticonfFiles {
-		fileContent, err := os.ReadFile(anticonfEntry)
+		fileContent, err := os.ReadFile(path.Join(extractpath, anticonfEntry))
 		if err != nil {
 			return nil, err
 		}
 		for key, dep := range ap.Parse(string(fileContent)) {
 			matchList := anticonfMgrRegex.FindStringSubmatch(key)
-			if len(matchList) < 1 {
+			if matchList == nil || len(matchList) < 1 {
 				continue
 			}
-			if pkgMgr, ok := pkgMgrMap[matchList[0]]; ok {
+			if pkgMgr, ok := pkgMgrMap[matchList[1]]; ok {
 				dependencies = append(dependencies, Dependency{
 					Name:           dep,
 					PackageManager: pkgMgr,
