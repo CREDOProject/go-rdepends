@@ -3,6 +3,7 @@ package gordepends
 import (
 	"errors"
 	"os"
+	"path"
 
 	"github.com/CREDOProject/go-rdepends/extractor"
 	"github.com/CREDOProject/go-rdepends/providers"
@@ -30,12 +31,26 @@ func DependsOn(packagePath string,
 		configuredProviders = providers.DefaultProviders()
 	}
 	var dependencyList []providers.Dependency
+	// Reads all the subnodes of the extractPath.
+	dirs, err := os.ReadDir(*extractPath)
+	if err != nil {
+		return nil, err
+	}
 	for _, provider := range configuredProviders {
 		list, err := provider.Parse(*extractPath)
 		if err != nil {
 			// TODO: Implement error logic.
 		}
 		dependencyList = append(dependencyList, list...)
+		for _, d := range dirs {
+			if d.IsDir() { // Scan if it's a directory.
+				list, err := provider.Parse(path.Join(*extractPath, d.Name()))
+				if err != nil {
+					// TODO: Implement error logic.
+				}
+				dependencyList = append(dependencyList, list...)
+			}
+		}
 	}
 	return dependencyList, nil
 }
