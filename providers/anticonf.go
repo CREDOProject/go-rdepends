@@ -37,9 +37,20 @@ func (a anticonf) Parse(path string) ([]Dependency, error) {
 			return nil, err
 		}
 		for key, dep := range ap.Parse(string(fileContent)) {
+			matchList := anticonfMgrRegex.FindStringSubmatch(key)
+			if len(matchList) < 1 {
+				continue
+			}
+			if pkgMgr, ok := pkgMgrMap[matchList[0]]; ok {
+				dependencies = append(dependencies, Dependency{
+					Name:           dep,
+					PackageManager: pkgMgr,
+					Suggestion:     false,
+				})
+			}
 		}
 	}
-	return nil, nil
+	return dependencies, nil
 }
 
 // Returns a new instance of anticonf Provider.
