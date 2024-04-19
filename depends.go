@@ -2,6 +2,7 @@ package gordepends
 
 import (
 	"errors"
+	"os"
 
 	"github.com/CREDOProject/go-rdepends/extractor"
 	"github.com/CREDOProject/go-rdepends/providers"
@@ -18,6 +19,7 @@ func DependsOn(packagePath string,
 		return nil, ErrNotTar
 	}
 	extractPath, err := extractor.Extract(packagePath)
+	defer os.RemoveAll(*extractPath)
 	if err != nil {
 		return nil, err
 	}
