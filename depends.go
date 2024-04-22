@@ -39,14 +39,14 @@ func DependsOn(packagePath string,
 	for _, provider := range configuredProviders {
 		list, err := provider.Parse(*extractPath)
 		if err != nil {
-			// TODO: Implement error logic.
+			return nil, err
 		}
 		dependencyList = append(dependencyList, list...)
 		for _, d := range dirs {
 			if d.IsDir() { // Scan if it's a directory.
 				list, err := provider.Parse(path.Join(*extractPath, d.Name()))
 				if err != nil {
-					// TODO: Implement error logic.
+					return nil, err
 				}
 				dependencyList = append(dependencyList, list...)
 			}
