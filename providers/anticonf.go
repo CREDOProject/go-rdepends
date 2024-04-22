@@ -3,6 +3,7 @@ package providers
 import (
 	"os"
 	"regexp"
+	"strings"
 
 	ap "github.com/CREDOProject/go-anticonf-parser"
 	"github.com/CREDOProject/sharedutils/files"
@@ -44,11 +45,13 @@ func (a anticonf) Parse(extractpath string) ([]Dependency, error) {
 				continue
 			}
 			if pkgMgr, ok := pkgMgrMap[matchList[1]]; ok {
-				dependencies = append(dependencies, Dependency{
-					Name:           dep,
-					PackageManager: pkgMgr,
-					Suggestion:     false,
-				})
+				for _, depName := range strings.Split(dep, " ") {
+					dependencies = append(dependencies, Dependency{
+						Name:           depName,
+						PackageManager: pkgMgr,
+						Suggestion:     false,
+					})
+				}
 			}
 		}
 	}
