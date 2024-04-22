@@ -22,3 +22,17 @@ func Test_Depends(t *testing.T) {
 		t.Error("Expected at least one dependency.")
 	}
 }
+
+func Test_SystemRequirements(t *testing.T) {
+	pathToDependency := "./test_assets/RCurl_1.98-1.14.tar.gz"
+	dir, err := os.Getwd()
+	if err != nil {
+		t.Error(err)
+	}
+	newPath := path.Join(dir, pathToDependency)
+	dep, err := DependsOn(newPath)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(dep)
+}

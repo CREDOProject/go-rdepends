@@ -1,5 +1,11 @@
 package providers
 
+const (
+	APT_NAME  = "apt"
+	RPM_NAME  = "rpm"
+	BREW_NAME = "brew"
+)
+
 // Describes what is a Provider.
 type Provider interface {
 	// Parse the dependencies
@@ -10,7 +16,7 @@ type Provider interface {
 func DefaultProviders() []Provider {
 	return []Provider{
 		NewAnticonf(),
-		NewPlain(),
+		NewSystemRequirements(),
 	}
 }
 
