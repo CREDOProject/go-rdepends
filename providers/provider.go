@@ -1,5 +1,7 @@
 package providers
 
+import "github.com/CREDOProject/go-rdepends/mappings"
+
 const (
 	APT_NAME  = "apt"
 	RPM_NAME  = "rpm"
@@ -16,7 +18,7 @@ type Provider interface {
 func DefaultProviders() []Provider {
 	return []Provider{
 		NewAnticonf(),
-		NewSystemRequirements(),
+		NewSystemRequirements(mappings.NewRegistryMappingProvider()),
 	}
 }
 

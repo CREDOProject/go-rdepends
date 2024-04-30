@@ -4,6 +4,7 @@ import (
 	"os"
 	"regexp"
 
+	"github.com/CREDOProject/go-rdepends/mappings"
 	"github.com/CREDOProject/sharedutils/files"
 	"pault.ag/go/debian/control"
 )
@@ -16,7 +17,9 @@ func descriptionLooksLike(name string) bool {
 	return descriptionRegex.MatchString(name)
 }
 
-type systemrequirements struct{}
+type systemrequirements struct {
+	mappingProviders []mappings.MappingsProvider
+}
 
 type DescriptionFile struct {
 	SystemRequirements []string `control:"SystemRequirements" delim:", " strip:"\n\r\t "`
@@ -42,43 +45,28 @@ func (p systemrequirements) Parse(extractpath string) ([]Dependency, error) {
 		}
 	outer:
 		for _, dep := range data.SystemRequirements {
+			for _, provider := range p.mappingProviders {
+				if data := provider.Get(dep); data != nil {
+					dependencies = append(dependencies, Dependency{
+						Name:           data.Name,
+						PackageManager: data.PackageManager,
+						Suggestion:     false,
+					})
+					continue outer
+				}
+			}
 			dependencies = append(dependencies, Dependency{
 				Name:           dep,
 				PackageManager: "",
 				Suggestion:     true,
 			})
-			for matcher, data := range mappings {
-				if ok := matcher.MatchString(dep); ok {
-					dependencies = append(dependencies, data...)
-					continue outer
-				}
-			}
+
 		}
 	}
 	return dependencies, nil
 }
 
 // Returns a new instance of plain Provider.
-func NewSystemRequirements() Provider {
-	return systemrequirements{}
-}
-
-// Fuzzy package mappings.
-var mappings = map[*regexp.Regexp][]Dependency{
-	// Matches GNU make, make, ...
-	regexp.MustCompile("(?i)^(?:.*)make$"): {
-		{
-			Name:           "make",
-			PackageManager: APT_NAME,
-			Suggestion:     false,
-		},
-	},
-	// Matches libcurl, ...
-	regexp.MustCompile("(?i)^(?:.*)libcurl$"): {
-		{
-			Name:           "libcurl-dev",
-			PackageManager: APT_NAME,
-			Suggestion:     false,
-		},
-	},
+func NewSystemRequirements(mappingProviders ...mappings.MappingsProvider) Provider {
+	return systemrequirements{mappingProviders: mappingProviders}
 }
