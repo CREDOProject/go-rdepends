@@ -18,7 +18,9 @@ type Provider interface {
 func DefaultProviders() []Provider {
 	return []Provider{
 		NewAnticonf(),
-		NewSystemRequirements(mappings.NewRegistryMappingProvider()),
+		NewSystemRequirements(
+			mappings.NewRegistryMappingProvider(),
+		),
 	}
 }
 
