@@ -43,6 +43,7 @@ func (p systemrequirements) Parse(extractpath string) ([]Dependency, error) {
 		if err != nil {
 			return nil, err
 		}
+	outer:
 		for _, dep := range data.SystemRequirements {
 			for _, provider := range p.mappingProviders {
 				if data := provider.Get(dep); data != nil {
@@ -53,6 +54,7 @@ func (p systemrequirements) Parse(extractpath string) ([]Dependency, error) {
 							Suggestion:     false,
 						})
 					}
+					continue outer
 				}
 			}
 			dependencies = append(dependencies, Dependency{
