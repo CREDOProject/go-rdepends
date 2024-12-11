@@ -1,6 +1,7 @@
 package providers
 
 import (
+	"fmt"
 	"os"
 	"regexp"
 
@@ -36,12 +37,12 @@ func (p systemrequirements) Parse(extractpath string) ([]Dependency, error) {
 		var data DescriptionFile
 		descFile, err := os.Open(descFilePath)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("[systemrequirements/Parse]: %v", err)
 		}
 		defer descFile.Close()
 		err = control.Unmarshal(&data, descFile)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("[systemrequirements/Parse]: %v", err)
 		}
 	outer:
 		for _, dep := range data.SystemRequirements {
