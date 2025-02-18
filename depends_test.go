@@ -36,3 +36,17 @@ func Test_SystemRequirements(t *testing.T) {
 	}
 	t.Log(dep)
 }
+
+func Test_SystemRequirements2(t *testing.T) {
+	pathToDependency := "./test_assets/BiocVersion_3.20.0.tar.gz"
+	dir, err := os.Getwd()
+	if err != nil {
+		t.Error(err)
+	}
+	newPath := path.Join(dir, pathToDependency)
+	dep, err := DependsOn(newPath)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(dep)
+}

@@ -2,6 +2,7 @@ package gordepends
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path"
 
@@ -24,7 +25,7 @@ func DependsOn(packagePath string,
 	}
 	extractPath, err := extractor.Extract(packagePath)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Error extracting file. %v", err)
 	}
 	defer os.RemoveAll(*extractPath)
 	if len(providersOptional) > 0 {
@@ -34,19 +35,19 @@ func DependsOn(packagePath string,
 	// Reads all the subnodes of the extractPath.
 	dirs, err := os.ReadDir(*extractPath)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Error reading directory. %v", err)
 	}
 	for _, provider := range configuredProviders {
 		list, err := provider.Parse(*extractPath)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Error parsing with provider: %v", provider)
 		}
 		dependencyList = append(dependencyList, list...)
 		for _, d := range dirs {
 			if d.IsDir() { // Scan if it's a directory.
 				list, err := provider.Parse(path.Join(*extractPath, d.Name()))
 				if err != nil {
-					return nil, err
+					return nil, fmt.Errorf("Error parsing with provider: %v", provider)
 				}
 				dependencyList = append(dependencyList, list...)
 			}

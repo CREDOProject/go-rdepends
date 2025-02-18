@@ -31,7 +31,7 @@ func (p systemrequirements) Parse(extractpath string) ([]Dependency, error) {
 	dependencies := []Dependency{}
 	descFilePaths, err := files.FilesInPath(extractpath, descriptionLooksLike)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("[systemrequirements/Parse]: %v", err)
 	}
 	for _, descFilePath := range descFilePaths {
 		var data DescriptionFile
