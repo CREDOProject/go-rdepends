@@ -16,10 +16,14 @@ type Provider interface {
 
 // Returns a slice of DefaultProviders.
 func DefaultProviders() []Provider {
+	registry := mappings.NewRegistryMappingProvider()
 	return []Provider{
 		NewAnticonf(),
 		NewSystemRequirements(
-			mappings.NewRegistryMappingProvider(),
+			registry,
+		),
+		NewFilename(
+			registry,
 		),
 	}
 }
